@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos de Desarrollo de Software</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cat-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .cat-tab {
+            padding: 0.65rem 1.6rem;
+            border: 1px solid rgba(200, 160, 255, 0.35);
+            border-radius: 50px;
+            background: rgba(80, 30, 160, 0.15);
+            backdrop-filter: blur(10px);
+            color: rgba(210, 185, 255, 0.70);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        .cat-tab:hover {
+            background: rgba(130, 60, 220, 0.30);
+            border-color: rgba(210, 170, 255, 0.65);
+            color: #fff;
+        }
+
+        .cat-tab.active {
+            background: rgba(150, 70, 255, 0.45);
+            border-color: rgba(220, 180, 255, 0.85);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(160, 80, 255, 0.55);
+        }
+
+        .cat-panel {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .cat-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Staggered card entrance ── */
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(28px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .model-card {
+            animation: cardReveal 0.5s ease both;
+        }
+
+        .model-card:nth-child(1) { animation-delay: 0.05s; }
+        .model-card:nth-child(2) { animation-delay: 0.12s; }
+        .model-card:nth-child(3) { animation-delay: 0.19s; }
+        .model-card:nth-child(4) { animation-delay: 0.26s; }
+        .model-card:nth-child(5) { animation-delay: 0.33s; }
+
+        /* ── Category title ── */
+        .cat-title {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(200, 160, 255, 0.55);
+            text-align: center;
+            width: 100%;
+            margin: 0 auto 2rem;
+        }
+
+        /* ── Models grid ── */
+        .models-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            text-align: left;
+        }
+
+        .model-card {
+            flex: 0 1 480px;
+            min-width: 320px;
+            max-width: 540px;
+            border: 1px solid rgba(200, 160, 255, 0.22);
+            border-radius: 22px;
+            background: rgba(70, 25, 140, 0.18);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            overflow: hidden;
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+
+        .model-card:hover {
+            transform: translateY(-8px);
+            box-shadow:
+                0 16px 50px rgba(140, 60, 255, 0.35),
+                0 0 0 1px rgba(200, 160, 255, 0.12);
+            border-color: rgba(200, 160, 255, 0.55);
+        }
+
+        /* card header stripe */
+        .model-card-header {
+            padding: 1.4rem 1.6rem 1rem;
+            border-bottom: 1px solid rgba(200, 160, 255, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+        }
+
+        .model-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(160, 80, 255, 0.65), rgba(100, 40, 200, 0.45));
+            border: 1px solid rgba(200, 160, 255, 0.45);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #e8d8ff;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(160, 80, 255, 0.4);
+        }
+
+        .model-card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #e4cfff;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        /* card body */
+        .model-card-body {
+            padding: 1.2rem 1.6rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        /* description */
+        .model-desc {
+            font-size: 0.92rem;
+            line-height: 1.75;
+            color: rgba(210, 185, 255, 0.80);
+        }
+
+        /* advantages / disadvantages */
+        .model-pros-cons {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .pros,
+        .cons {
+            flex: 1 1 140px;
+            padding: 0.85rem 1rem;
+            border-radius: 14px;
+            background: rgba(60, 20, 120, 0.22);
+            border: 1px solid rgba(200, 160, 255, 0.10);
+        }
+
+        .pros h3,
+        .cons h3 {
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .pros h3 {
+            color: rgba(150, 255, 190, 0.85);
+        }
+
+        .cons h3 {
+            color: rgba(255, 140, 150, 0.85);
+        }
+
+        .pros ul,
+        .cons ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .pros li,
+        .cons li {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: rgba(210, 185, 255, 0.72);
+            padding-left: 1.1em;
+            position: relative;
+        }
+
+        .pros li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: rgba(130, 255, 170, 0.75);
+            font-size: 0.75rem;
+        }
+
+        .cons li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: rgba(255, 110, 130, 0.75);
+            font-size: 0.75rem;
+        }
+
+        /* ── Media section ── */
+        .model-media {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid rgba(200, 160, 255, 0.10);
+            margin-top: 0.3rem;
+        }
+
+        /* ── Media labels ── */
+        .media-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(200, 160, 255, 0.55);
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .media-label .label-icon {
+            font-size: 0.85rem;
+        }
+
+        /* ── Image slot ── */
+        .model-img-wrap {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(200, 160, 255, 0.18);
+            background: rgba(60, 20, 110, 0.25);
+        }
+
+        .model-img-wrap img {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            display: block;
+            background: rgba(30, 10, 60, 0.5);
+            transition: transform 0.4s ease;
+        }
+
+        .model-img-wrap:hover img {
+            transform: scale(1.05);
+        }
+
+        /* ── Video slot ── */
+        .model-vid-wrap {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(200, 160, 255, 0.18);
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+
+        .model-vid-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ── Custom Audio Player ── */
+        .custom-audio {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: 14px;
+            background: rgba(60, 20, 120, 0.35);
+            border: 1px solid rgba(200, 160, 255, 0.18);
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .custom-audio:hover {
+            border-color: rgba(200, 160, 255, 0.40);
+            box-shadow: 0 0 18px rgba(140, 60, 255, 0.20);
+        }
+
+        .custom-audio .audio-play-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(200, 160, 255, 0.45);
+            background: linear-gradient(135deg, rgba(160, 80, 255, 0.55), rgba(100, 40, 200, 0.40));
+            color: #e8d8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            font-size: 0.85rem;
+            padding: 0;
+        }
+
+        .custom-audio .audio-play-btn:hover {
+            transform: scale(1.12);
+            box-shadow: 0 0 14px rgba(160, 80, 255, 0.55);
+            background: linear-gradient(135deg, rgba(180, 100, 255, 0.70), rgba(120, 50, 220, 0.55));
+        }
+
+        .custom-audio .audio-play-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: #e8d8ff;
+        }
+
+        .custom-audio .audio-track {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 0;
+        }
+
+        .custom-audio .audio-progress-bar {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(100, 50, 180, 0.35);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-audio .audio-progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, rgba(160, 80, 255, 0.85), rgba(200, 140, 255, 0.95));
+            transition: width 0.1s linear;
+            position: relative;
+        }
+
+        .custom-audio .audio-progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #d4b0ff;
+            box-shadow: 0 0 8px rgba(200, 160, 255, 0.65);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .custom-audio:hover .audio-progress-fill::after {
+            opacity: 1;
+        }
+
+        .custom-audio .audio-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            letter-spacing: 0.06em;
+            color: rgba(200, 160, 255, 0.50);
+            font-family: 'Outfit', monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+    <div class="milky-way"></div>
+
+    <div class="content" style="justify-content:flex-start; padding-top:3rem;">
+        <h1 style="width:100%; text-align:center;">Modelos de Desarrollo de Software</h1>
+
+        <!-- ══ CATEGORY TABS ══ -->
+        <nav class="cat-tabs" role="tablist">
+            <button class="cat-tab active" data-cat="prescriptivos">Prescriptivos</button>
+            <button class="cat-tab" data-cat="especializados">Especializados</button>
+            <button class="cat-tab" data-cat="unificado">Proceso Unificado</button>
+            <button class="cat-tab" data-cat="agiles">Ágiles</button>
+        </nav>
+
+        <!-- ══════════════════════════════════════════
+             CATEGORY 1 — PRESCRIPTIVOS (5 models)
+        ══════════════════════════════════════════ -->
+        <section class="cat-panel active" id="cat-prescriptivos" role="tabpanel">
+            <p class="cat-title">Modelos Prescriptivos</p>
+            <div class="models-grid">
+
+                <!-- 1. Cascada -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">1</div>
+                        <h2>Modelo en Cascada</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Es el modelo de proceso de software más antiguo y ampliamente usado. Propone un enfoque
+                            sistemático y secuencial que fluye hacia abajo como una cascada a través de fases como
+                            comunicación, planeación, modelado, construcción y despliegue.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Fácil de entender y gestionar</li>
+                                    <li>Documentación clara en cada fase</li>
+                                    <li>Ideal para proyectos con requisitos fijos</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Poca flexibilidad ante cambios</li>
+                                    <li>El cliente solo ve el producto al final</li>
+                                    <li>Los errores se detectan tarde</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Cascada.avif" alt="Diagrama del Modelo en Cascada" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/gM66N5pwvrA" title="Video Modelo en Cascada" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Modelo de Cascada.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Proceso Incremental -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">2</div>
+                        <h2>Proceso Incremental</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Combina elementos del modelo en cascada aplicados repetidamente. En cada incremento se
+                            entrega un producto operacional al cliente, permitiendo retroalimentación temprana y
+                            continua entre entregas funcionales.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Entregas funcionales tempranas</li>
+                                    <li>Menor riesgo de fracaso total</li>
+                                    <li>Adaptable a cambios de requisitos</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Requiere planificación cuidadosa</li>
+                                    <li>Puede generar dependencias complejas</li>
+                                    <li>Difícil de integrar sistemas grandes</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Incremental.jpg" alt="Diagrama del Proceso Incremental" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/0KH0EVehQJ0" title="Video Proceso Incremental" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Proceso Incremental.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Proceso Evolutivo -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">3</div>
+                        <h2>Proceso Evolutivo</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Desarrolla una versión inicial y la refina mediante múltiples iteraciones basadas en
+                            la retroalimentación del usuario. El software evoluciona con el tiempo, adaptándose a
+                            requisitos que cambian o no estaban completamente definidos al inicio.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Responde bien a cambios</li>
+                                    <li>El cliente participa activamente</li>
+                                    <li>Reduce el riesgo de requisitos mal entendidos</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Difícil de estimar tiempos y costos</li>
+                                    <li>Riesgo de sistemas mal estructurados</li>
+                                    <li>Riesgo de cambios infinitos</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Evolutivo.jpg" alt="Diagrama del Proceso Evolutivo" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/2BajFXKrigw" title="Video Proceso Evolutivo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Proceso Evolutivo.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Modelo Espiral -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">4</div>
+                        <h2>Modelo Espiral</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Propuesto por Barry Boehm, combina la naturaleza iterativa de los prototipos con los
+                            aspectos sistemáticos del modelo en cascada. Cada vuelta de la espiral representa una
+                            fase, incorporando un análisis de riesgo en cada iteración.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Gestión explícita de riesgos</li>
+                                    <li>Flexible ante cambios</li>
+                                    <li>Adecuado para proyectos grandes</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Requiere experiencia en gestión de riesgos</li>
+                                    <li>Puede ser costoso y lento</li>
+                                    <li>Complejo de gestionar</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Espiral.jpg" alt="Diagrama del Modelo Espiral" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/mp22SDTnsQQ" title="Video Modelo Espiral" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Modelo Espiral.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Modelo Concurrente -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">5</div>
+                        <h2>Modelo Concurrente</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Permite representar elementos concurrentes de cualquier modelo del proceso. Define
+                            actividades del proceso de ingeniería usando estados que ocurren simultáneamente,
+                            adecuado para proyectos con equipos que trabajan en paralelo.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Permite trabajo en paralelo</li>
+                                    <li>Refleja la realidad del trabajo en equipo</li>
+                                    <li>Reduce tiempos de desarrollo</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Difícil de coordinar equipos</li>
+                                    <li>Requiere herramientas especializadas</li>
+                                    <li>Mayor complejidad de seguimiento</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Concurrente.png" alt="Diagrama del Modelo Concurrente" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/jw_vraxfnQw" title="Video Modelo Concurrente" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Modelo Concurrente.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- .models-grid -->
+        </section>
+
+        <!-- ══════════════════════════════════════════
+             CATEGORY 2 — ESPECIALIZADOS (3 models)
+        ══════════════════════════════════════════ -->
+        <section class="cat-panel" id="cat-especializados" role="tabpanel">
+            <p class="cat-title">Modelos Especializados</p>
+            <div class="models-grid">
+
+                <!-- 6. Basado en Componentes -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">6</div>
+                        <h2>Basado en Componentes</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Se enfoca en el diseño y construcción de sistemas a partir de componentes de software
+                            reutilizables. Incorpora muchas características del modelo espiral y es iterativo por
+                            naturaleza, promoviendo la reutilización sistémica.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Alta reutilización de código</li>
+                                    <li>Reduce tiempo de desarrollo</li>
+                                    <li>Mayor fiabilidad del sistema</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Dependencia de componentes de terceros</li>
+                                    <li>Posibles incompatibilidades</li>
+                                    <li>El sistema puede ceder el control del diseño</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Componentes.webp" alt="Diagrama de Basado en Componentes" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/sj6fiqanl_w" title="Video Basado en Componentes" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Basado en Componentes.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Métodos Formales -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">7</div>
+                        <h2>Métodos Formales</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Abarca actividades que conducen a la especificación matemática del software. Permiten
+                            verificar requisitos de forma rigurosa usando lógica formal, siendo particularmente
+                            útil en sistemas críticos donde los errores son inaceptables.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Máxima precisión y rigor</li>
+                                    <li>Detecta ambigüedades en requisitos</li>
+                                    <li>Ideal para sistemas críticos</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Muy costoso y lento</li>
+                                    <li>Requiere conocimiento matemático avanzado</li>
+                                    <li>Difícil de aplicar a gran escala</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Formales.webp" alt="Diagrama de Métodos Formales" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/yAm_VFEgk1I" title="Video Métodos Formales" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Modelo Formal.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Orientado a Aspectos -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">8</div>
+                        <h2>Orientado a Aspectos</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Define, especifica, diseña y construye "aspectos" — mecanismos que permiten definir
+                            las funciones de un sistema que se propagan a través de múltiples clases o módulos,
+                            como la seguridad, el logging o la gestión de errores.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Mejor separación de responsabilidades</li>
+                                    <li>Código más limpio y mantenible</li>
+                                    <li>Reduce la duplicación transversal</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Curva de aprendizaje alta</li>
+                                    <li>Difícil de depurar</li>
+                                    <li>Herramientas de soporte limitadas</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Aspectos" alt="Diagrama de Orientado a Aspectos" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/7IDF9vwIEac" title="Video Orientado a Aspectos" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Orientado a Aspectos.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- .models-grid -->
+        </section>
+
+        <!-- ══════════════════════════════════════════
+             CATEGORY 3 — PROCESO UNIFICADO (1 model)
+        ══════════════════════════════════════════ -->
+        <section class="cat-panel" id="cat-unificado" role="tabpanel">
+            <p class="cat-title">Proceso Unificado</p>
+            <div class="models-grid" style="justify-content:center;">
+
+                <!-- 9. Proceso Unificado -->
+                <div class="model-card" style="flex: 0 1 520px; max-width:560px;">
+                    <div class="model-card-header">
+                        <div class="model-num">9</div>
+                        <h2>Proceso Unificado (UP)</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            El Proceso Unificado es un marco de desarrollo iterativo e incremental que organiza el
+                            trabajo en cuatro fases: Inicio, Elaboración, Construcción y Transición. Está basado
+                            en casos de uso, es centrado en la arquitectura y dirigido por riesgos. Su versión más
+                            conocida es el Rational Unified Process (RUP).
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Iterativo e incremental</li>
+                                    <li>Fuerte énfasis en arquitectura</li>
+                                    <li>Gestión de riesgos integrada</li>
+                                    <li>Escalable a proyectos grandes</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Complejo de implementar correctamente</li>
+                                    <li>Documentación extensa</li>
+                                    <li>Puede resultar pesado para equipos pequeños</li>
+                                    <li>Requiere capacitación especializada</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Proceso Unificado.webp" alt="Diagrama del Proceso Unificado" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/M5_C58TWNHU" title="Video Proceso Unificado" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Proceso Unificado.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- .models-grid -->
+        </section>
+
+        <!-- ══════════════════════════════════════════
+             CATEGORY 4 — ÁGILES (3 models)
+        ══════════════════════════════════════════ -->
+        <section class="cat-panel" id="cat-agiles" role="tabpanel">
+            <p class="cat-title">Modelos Ágiles</p>
+            <div class="models-grid">
+
+                <!-- 10. Scrum -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">10</div>
+                        <h2>Scrum</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Marco ágil que organiza el trabajo en sprints de 2 a 4 semanas. Define roles claros
+                            (Product Owner, Scrum Master, equipo de desarrollo) y ceremonias periódicas como la
+                            revisión y retrospectiva, promoviendo la transparencia y la mejora continua.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Entregas rápidas y frecuentes</li>
+                                    <li>Alta transparencia y visibilidad</li>
+                                    <li>Fomenta la colaboración del equipo</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Difícil de escalar sin adaptaciones</li>
+                                    <li>Requiere compromiso total del equipo</li>
+                                    <li>Alcance puede crecer sin control</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Scrum.webp" alt="Diagrama de Scrum" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/HhC75IonpOU" title="Video Scrum" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Scrum.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 11. XP -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">11</div>
+                        <h2>Extreme Programming (XP)</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Metodología ágil centrada en mejorar la calidad del software y la capacidad de
+                            respuesta a cambios. Promueve prácticas como programación en pares, desarrollo
+                            guiado por pruebas (TDD), integración continua y refactorización constante.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Alta calidad del código</li>
+                                    <li>Detección temprana de errores (TDD)</li>
+                                    <li>Gran adaptabilidad a cambios</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Requiere mucha disciplina técnica</li>
+                                    <li>Cliente debe estar muy involucrado</li>
+                                    <li>Difícil de aplicar en equipos grandes</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/XP.jpg" alt="Diagrama de Extreme Programming" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/hbFOwqYIOcU" title="Video Extreme Programming" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/XP.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 12. Kanban -->
+                <div class="model-card">
+                    <div class="model-card-header">
+                        <div class="model-num">12</div>
+                        <h2>Kanban</h2>
+                    </div>
+                    <div class="model-card-body">
+                        <p class="model-desc">
+                            Sistema de gestión del flujo de trabajo que visualiza las tareas en un tablero con
+                            columnas (Por hacer, En progreso, Terminado). Limita el trabajo en curso (WIP) para
+                            maximizar la eficiencia y minimizar los cuellos de botella en el proceso.
+                        </p>
+                        <div class="model-pros-cons">
+                            <div class="pros">
+                                <h3>Ventajas</h3>
+                                <ul>
+                                    <li>Visualización clara del flujo</li>
+                                    <li>Muy flexible, sin iteraciones fijas</li>
+                                    <li>Fácil de adoptar gradualmente</li>
+                                </ul>
+                            </div>
+                            <div class="cons">
+                                <h3>Desventajas</h3>
+                                <ul>
+                                    <li>Poca estructura para proyectos complejos</li>
+                                    <li>Sin roles ni ceremonias definidas</li>
+                                    <li>Puede perder el enfoque sin límites WIP</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="model-media">
+                            <p class="media-label"><span class="label-icon">🖼️</span> Diagrama</p>
+                            <div class="model-img-wrap">
+                                <img src="images/Kanban.webp" alt="Diagrama de Kanban" loading="lazy">
+                            </div>
+                            <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                            <div class="model-vid-wrap">
+                                <iframe src="https://www.youtube.com/embed/KeukwUyLZdg" title="Video Kanban" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <p class="media-label"><span class="label-icon">🔊</span> Descripción en voz</p>
+                            <div class="custom-audio" data-src="audios/Kanban.m4a">
+                                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                                <div class="audio-track">
+                                    <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                                    <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- .models-grid -->
+        </section>
+
+        <a href="index.html" class="btn btn-menu" style="margin-top:3rem;">← Regresar</a>
+    </div>
+
+    <script>
+        // Tab switching logic
+        const tabs = document.querySelectorAll('.cat-tab');
+        const panels = document.querySelectorAll('.cat-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.cat;
+
+                tabs.forEach(t => t.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+
+                tab.classList.add('active');
+                const panel = document.getElementById('cat-' + target);
+                panel.classList.add('active');
+
+                // Re-trigger staggered card animations
+                panel.querySelectorAll('.model-card').forEach(card => {
+                    card.style.animation = 'none';
+                    card.offsetHeight; // force reflow
+                    card.style.animation = '';
+                });
+
+                // Smooth scroll to top of panel
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // ── Custom Audio Player Logic ──
+        const playSVG = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>';
+        const pauseSVG = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>';
+
+        function fmtTime(s) {
+            if (!s || !isFinite(s)) return '-:--';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + String(sec).padStart(2, '0');
+        }
+
+        let currentlyPlaying = null;
+
+        document.querySelectorAll('.custom-audio').forEach(player => {
+            const btn = player.querySelector('.audio-play-btn');
+            const bar = player.querySelector('.audio-progress-bar');
+            const fill = player.querySelector('.audio-progress-fill');
+            const curEl = player.querySelector('.audio-current');
+            const durEl = player.querySelector('.audio-duration');
+            let audio = null;
+            let loaded = false;
+
+            function initAudio() {
+                if (loaded) return;
+                audio = new Audio(player.dataset.src);
+                audio.preload = 'metadata';
+                loaded = true;
+
+                audio.addEventListener('loadedmetadata', () => {
+                    durEl.textContent = fmtTime(audio.duration);
+                });
+
+                audio.addEventListener('timeupdate', () => {
+                    if (!audio.duration) return;
+                    const pct = (audio.currentTime / audio.duration) * 100;
+                    fill.style.width = pct + '%';
+                    curEl.textContent = fmtTime(audio.currentTime);
+                });
+
+                audio.addEventListener('ended', () => {
+                    btn.innerHTML = playSVG;
+                    fill.style.width = '0%';
+                    curEl.textContent = '0:00';
+                    currentlyPlaying = null;
+                });
+            }
+
+            btn.addEventListener('click', () => {
+                initAudio();
+                if (audio.paused) {
+                    // Pause any other playing audio
+                    if (currentlyPlaying && currentlyPlaying !== player) {
+                        const otherBtn = currentlyPlaying.querySelector('.audio-play-btn');
+                        currentlyPlaying._audio.pause();
+                        otherBtn.innerHTML = playSVG;
+                    }
+                    audio.play();
+                    btn.innerHTML = pauseSVG;
+                    player._audio = audio;
+                    currentlyPlaying = player;
+                } else {
+                    audio.pause();
+                    btn.innerHTML = playSVG;
+                    currentlyPlaying = null;
+                }
+            });
+
+            bar.addEventListener('click', (e) => {
+                initAudio();
+                if (!audio.duration) return;
+                const rect = bar.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = pct * audio.duration;
+            });
+        });
+    </script>
+</body>
+
+</html>

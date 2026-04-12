@@ -1,0 +1,393 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600;700&display=swap');
+
+/* ============================================================
+   1. RESET & BASE
+============================================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ============================================================
+   2. BODY — GALAXY CANVAS
+============================================================ */
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: #050008;
+    background-image:
+        radial-gradient(ellipse at 80% 10%,
+            rgba(80, 40, 200, 0.35) 0%,
+            transparent 55%),
+        radial-gradient(ellipse at 15% 85%,
+            rgba(160, 20, 120, 0.30) 0%,
+            transparent 50%),
+        radial-gradient(ellipse at 50% 50%,
+            rgba(60, 10, 80, 0.80) 0%,
+            rgba(10, 2, 20, 0.95) 55%,
+            #050008 100%);
+    background-attachment: fixed;
+    font-family: 'Outfit', sans-serif;
+    animation: pageIn 0.6s ease both;
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   3. STAR LAYERS
+============================================================ */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow:
+        120px 80px #fff, 310px 220px #fff, 540px 45px #fff,
+        780px 160px #fff, 90px 340px #fff, 430px 500px #fff,
+        660px 290px #fff, 820px 70px #fff, 200px 410px #fff,
+        970px 330px #fff, 60px 150px #fff, 500px 130px #fff,
+        740px 480px #fff, 355px 30px #fff, 615px 370px #fff,
+        880px 200px #fff, 145px 520px #fff, 690px 560px #fff,
+        280px 600px #fff, 450px 680px #fff, 920px 610px #fff,
+        100px 700px #fff, 760px 720px #fff, 330px 760px #fff,
+        590px 800px #fff, 850px 770px #fff, 40px 820px #fff,
+        480px 870px #fff, 710px 850px #fff, 960px 780px #fff;
+    animation: twinkle 3s linear infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.stars2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow:
+        200px 150px #fff, 470px 90px #fff, 730px 260px #fff,
+        950px 140px #fff, 170px 450px #fff, 610px 420px #fff,
+        840px 390px #fff, 80px 580px #fff, 390px 640px #fff,
+        670px 700px #fff, 910px 520px #fff, 250px 730px #fff,
+        520px 490px #fff, 790px 650px #fff, 135px 300px #fff,
+        445px 210px #fff, 715px 170px #fff;
+    animation: twinkle 5s linear infinite alternate-reverse;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.stars3 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow:
+        350px 110px #fff, 630px 270px #fff, 860px 50px #fff,
+        190px 490px #fff, 570px 580px #fff, 820px 450px #fff,
+        110px 660px #fff, 440px 780px #fff, 720px 740px #fff,
+        960px 680px #fff;
+    animation: twinkle 7s linear infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 0.05;
+    }
+
+    20% {
+        opacity: 0.9;
+    }
+
+    40% {
+        opacity: 0.15;
+    }
+
+    60% {
+        opacity: 1.0;
+    }
+
+    80% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 0.85;
+    }
+}
+
+/* ============================================================
+   4. MILKY WAY BAND
+============================================================ */
+.milky-way {
+    position: fixed;
+    top: 30%;
+    left: -50%;
+    width: 200%;
+    height: 25%;
+    transform: rotate(-25deg);
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.025) 20%,
+            rgba(200, 160, 255, 0.060) 50%,
+            rgba(255, 255, 255, 0.025) 80%,
+            transparent 100%);
+    filter: blur(28px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+
+@keyframes shoot {
+    0% {
+        transform: translateX(0) rotate(35deg);
+        opacity: 1;
+    }
+
+    75% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(120vw) rotate(35deg);
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   5. ENTRANCE ANIMATIONS
+============================================================ */
+@keyframes contentSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardRevealGlobal {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================================
+   6. CONTENT WRAPPER
+============================================================ */
+.content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #fff;
+}
+
+.content h1 {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #e8d8ff 0%, #c8a0ff 40%, #f0d0ff 70%, #d4b8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(180, 120, 255, 0.50));
+    margin-bottom: 2.5rem;
+    animation: contentSlideUp 0.6s ease 0.1s both;
+}
+
+.content p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(220, 200, 255, 0.70);
+    max-width: 540px;
+    margin-bottom: 2rem;
+    animation: contentSlideUp 0.6s ease 0.2s both;
+}
+
+.lead {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: rgba(230, 210, 255, 0.80);
+    max-width: 620px;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    animation: contentSlideUp 0.6s ease 0.2s both;
+}
+
+/* ============================================================
+   7. BUTTONS
+============================================================ */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    border: 1px solid rgba(200, 160, 255, 0.45);
+    border-radius: 50px;
+    background: rgba(120, 60, 200, 0.20);
+    backdrop-filter: blur(8px);
+    color: #dbb8ff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.25s;
+    animation: contentSlideUp 0.5s ease 0.3s both;
+}
+
+.btn:hover {
+    background: rgba(150, 80, 255, 0.35);
+    border-color: rgba(220, 180, 255, 0.75);
+    color: #fff;
+    box-shadow: 0 0 22px rgba(160, 80, 255, 0.50), 0 0 60px rgba(140, 60, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px rgba(160, 80, 255, 0.35);
+}
+
+.btn-menu {
+    margin: 0.5em;
+}
+
+/* stagger menu buttons */
+.btn-menu:nth-child(2) { animation-delay: 0.35s; }
+.btn-menu:nth-child(3) { animation-delay: 0.40s; }
+.btn-menu:nth-child(4) { animation-delay: 0.45s; }
+.btn-menu:nth-child(5) { animation-delay: 0.50s; }
+
+/* ============================================================
+   8. ETAPAS — CARD GRID
+============================================================ */
+
+/* Flex container that wraps all stage cards */
+.etapas-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1100px;
+    margin-bottom: 2.5rem;
+    text-align: left;
+}
+
+/* Force a 2-column layout (for pages with exactly 4 cards) */
+.etapas-grid.grid-2col {
+    max-width: 680px;
+}
+
+/* Individual stage card */
+.etapa-card {
+    position: relative;
+    flex: 0 1 300px;
+    min-width: 260px;
+    padding: 2rem 1.75rem 1.75rem;
+    border: 1px solid rgba(200, 160, 255, 0.25);
+    border-radius: 20px;
+    background: rgba(80, 30, 160, 0.18);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    overflow: hidden;
+    animation: cardRevealGlobal 0.5s ease both;
+}
+
+/* Stagger card entrance */
+.etapa-card:nth-child(1) { animation-delay: 0.10s; }
+.etapa-card:nth-child(2) { animation-delay: 0.18s; }
+.etapa-card:nth-child(3) { animation-delay: 0.26s; }
+.etapa-card:nth-child(4) { animation-delay: 0.34s; }
+.etapa-card:nth-child(5) { animation-delay: 0.42s; }
+
+/* Subtle accent glow at the top of each card */
+.etapa-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200, 160, 255, 0.50), transparent);
+}
+
+.etapa-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+        0 14px 45px rgba(140, 60, 255, 0.35),
+        0 0 0 1px rgba(200, 160, 255, 0.10);
+    border-color: rgba(200, 160, 255, 0.55);
+}
+
+/* Step number badge */
+.etapa-card .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(160, 80, 255, 0.6), rgba(100, 40, 200, 0.4));
+    border: 1px solid rgba(200, 160, 255, 0.45);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #e8d8ff;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 12px rgba(160, 80, 255, 0.4);
+}
+
+.etapa-card h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #e4cfff;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+}
+
+.etapa-card p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: rgba(210, 185, 255, 0.75);
+    margin-bottom: 0;
+    max-width: none;
+}

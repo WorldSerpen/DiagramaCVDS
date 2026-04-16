@@ -42,6 +42,7 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -184,6 +185,7 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -195,6 +197,7 @@ body {
         opacity: 0;
         transform: translateY(24px) scale(0.97);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -290,10 +293,21 @@ body {
 }
 
 /* stagger menu buttons */
-.btn-menu:nth-child(2) { animation-delay: 0.35s; }
-.btn-menu:nth-child(3) { animation-delay: 0.40s; }
-.btn-menu:nth-child(4) { animation-delay: 0.45s; }
-.btn-menu:nth-child(5) { animation-delay: 0.50s; }
+.btn-menu:nth-child(2) {
+    animation-delay: 0.35s;
+}
+
+.btn-menu:nth-child(3) {
+    animation-delay: 0.40s;
+}
+
+.btn-menu:nth-child(4) {
+    animation-delay: 0.45s;
+}
+
+.btn-menu:nth-child(5) {
+    animation-delay: 0.50s;
+}
 
 /* ============================================================
    8. ETAPAS — CARD GRID
@@ -333,11 +347,25 @@ body {
 }
 
 /* Stagger card entrance */
-.etapa-card:nth-child(1) { animation-delay: 0.10s; }
-.etapa-card:nth-child(2) { animation-delay: 0.18s; }
-.etapa-card:nth-child(3) { animation-delay: 0.26s; }
-.etapa-card:nth-child(4) { animation-delay: 0.34s; }
-.etapa-card:nth-child(5) { animation-delay: 0.42s; }
+.etapa-card:nth-child(1) {
+    animation-delay: 0.10s;
+}
+
+.etapa-card:nth-child(2) {
+    animation-delay: 0.18s;
+}
+
+.etapa-card:nth-child(3) {
+    animation-delay: 0.26s;
+}
+
+.etapa-card:nth-child(4) {
+    animation-delay: 0.34s;
+}
+
+.etapa-card:nth-child(5) {
+    animation-delay: 0.42s;
+}
 
 /* Subtle accent glow at the top of each card */
 .etapa-card::before {
@@ -390,4 +418,128 @@ body {
     color: rgba(210, 185, 255, 0.75);
     margin-bottom: 0;
     max-width: none;
+}
+
+/* ── Custom Audio Player ── */
+.custom-audio {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 14px;
+    background: rgba(60, 20, 120, 0.35);
+    border: 1px solid rgba(200, 160, 255, 0.18);
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.custom-audio:hover {
+    border-color: rgba(200, 160, 255, 0.40);
+    box-shadow: 0 0 18px rgba(140, 60, 255, 0.20);
+}
+
+.custom-audio .audio-play-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(200, 160, 255, 0.45);
+    background: linear-gradient(135deg, rgba(160, 80, 255, 0.55), rgba(100, 40, 200, 0.40));
+    color: #e8d8ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    font-size: 0.85rem;
+    padding: 0;
+}
+
+.custom-audio .audio-play-btn:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 14px rgba(160, 80, 255, 0.55);
+    background: linear-gradient(135deg, rgba(180, 100, 255, 0.70), rgba(120, 50, 220, 0.55));
+}
+
+.custom-audio .audio-play-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: #e8d8ff;
+}
+
+.custom-audio .audio-track {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.custom-audio .audio-progress-bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(100, 50, 180, 0.35);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-audio .audio-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, rgba(160, 80, 255, 0.85), rgba(200, 140, 255, 0.95));
+    transition: width 0.1s linear;
+    position: relative;
+}
+
+.custom-audio .audio-progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d4b0ff;
+    box-shadow: 0 0 8px rgba(200, 160, 255, 0.65);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.custom-audio:hover .audio-progress-fill::after {
+    opacity: 1;
+}
+
+.custom-audio .audio-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: rgba(200, 160, 255, 0.50);
+    font-family: 'Outfit', monospace;
+}
+
+.model-img-wrap {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(200, 160, 255, 0.18);
+    background: rgba(60, 20, 110, 0.25);
+}
+
+.model-img-wrap img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+    background: rgba(30, 10, 60, 0.5);
+    transition: transform 0.4s ease;
+}
+
+.model-img-wrap:hover img {
+    transform: scale(1.05);
 }

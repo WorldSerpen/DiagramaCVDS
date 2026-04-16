@@ -24,6 +24,9 @@
                 <h2>Comunicación</h2>
                 <p>Antes de cualquier trabajo técnico, se busca entender los objetivos del cliente y los requisitos del
                     sistema. Incluye la colaboración con los interesados para definir qué se necesita construir.</p>
+                <div class="model-img-wrap">
+                    <img src="images/Comunicacion.jpg" alt="Diagrama de Extreme Programming" loading="lazy">
+                </div>
             </div>
             <div class="etapa-card">
                 <div class="step-num">2</div>
@@ -31,6 +34,9 @@
                 <p>Se establece un plan de trabajo: estimación de tiempos, recursos, costos y riesgos. Define el "mapa
                     del
                     viaje" que guiará al equipo durante el desarrollo.</p>
+                <div class="model-img-wrap">
+                    <img src="images/Planeacion.jpg" alt="Diagrama de Extreme Programming" loading="lazy">
+                </div>
             </div>
             <div class="etapa-card">
                 <div class="step-num">3</div>
@@ -38,23 +44,122 @@
                 <p>Se crean modelos (diagramas, prototipos, bocetos arquitectónicos) para entender mejor los requisitos
                     y
                     el diseño antes de escribir código. Es el equivalente al plano de un arquitecto.</p>
+                <div class="model-img-wrap">
+                    <img src="images/Modelado.png" alt="Diagrama de Extreme Programming" loading="lazy">
+                </div>
             </div>
             <div class="etapa-card">
                 <div class="step-num">4</div>
                 <h2>Construcción</h2>
                 <p>Aquí ocurre la magia: el código se escribe, se compila y se integra. Es la fase donde las ideas
                     abstractas se convierten en un producto funcional.</p>
+                <div class="model-img-wrap">
+                    <img src="images/Construccion.jpg" alt="Diagrama de Extreme Programming" loading="lazy">
+                </div>
             </div>
             <div class="etapa-card">
                 <div class="step-num">5</div>
                 <h2>Despliegue</h2>
                 <p>El software se entrega al cliente y se pone en producción. Incluye instalación, configuración y
                     capacitación de usuarios.</p>
+                <div class="model-img-wrap">
+                    <img src="images/Despliegue.jpg" alt="Diagrama de Extreme Programming" loading="lazy">
+                </div>
+            </div>
+            <div class="custom-audio" data-src="audios/Etapas.m4a">
+                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24">
+                        <polygon points="6,3 20,12 6,21" />
+                    </svg></button>
+                <div class="audio-track">
+                    <div class="audio-progress-bar">
+                        <div class="audio-progress-fill"></div>
+                    </div>
+                    <div class="audio-time"><span class="audio-current">0:00</span><span
+                            class="audio-duration">-:--</span></div>
+                </div>
             </div>
         </div>
 
         <a href="index.html" class="btn btn-menu">← Regresar</a>
     </div>
+
+    <script>
+        // ── Custom Audio Player Logic ──
+        const playSVG = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>';
+        const pauseSVG = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>';
+
+        function fmtTime(s) {
+            if (!s || !isFinite(s)) return '-:--';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + String(sec).padStart(2, '0');
+        }
+
+        let currentlyPlaying = null;
+
+        document.querySelectorAll('.custom-audio').forEach(player => {
+            const btn = player.querySelector('.audio-play-btn');
+            const bar = player.querySelector('.audio-progress-bar');
+            const fill = player.querySelector('.audio-progress-fill');
+            const curEl = player.querySelector('.audio-current');
+            const durEl = player.querySelector('.audio-duration');
+            let audio = null;
+            let loaded = false;
+
+            function initAudio() {
+                if (loaded) return;
+                audio = new Audio(player.dataset.src);
+                audio.preload = 'metadata';
+                loaded = true;
+
+                audio.addEventListener('loadedmetadata', () => {
+                    durEl.textContent = fmtTime(audio.duration);
+                });
+
+                audio.addEventListener('timeupdate', () => {
+                    if (!audio.duration) return;
+                    const pct = (audio.currentTime / audio.duration) * 100;
+                    fill.style.width = pct + '%';
+                    curEl.textContent = fmtTime(audio.currentTime);
+                });
+
+                audio.addEventListener('ended', () => {
+                    btn.innerHTML = playSVG;
+                    fill.style.width = '0%';
+                    curEl.textContent = '0:00';
+                    currentlyPlaying = null;
+                });
+            }
+
+            btn.addEventListener('click', () => {
+                initAudio();
+                if (audio.paused) {
+                    // Pause any other playing audio
+                    if (currentlyPlaying && currentlyPlaying !== player) {
+                        const otherBtn = currentlyPlaying.querySelector('.audio-play-btn');
+                        currentlyPlaying._audio.pause();
+                        otherBtn.innerHTML = playSVG;
+                    }
+                    audio.play();
+                    btn.innerHTML = pauseSVG;
+                    player._audio = audio;
+                    currentlyPlaying = player;
+                } else {
+                    audio.pause();
+                    btn.innerHTML = playSVG;
+                    currentlyPlaying = null;
+                }
+            });
+
+            bar.addEventListener('click', (e) => {
+                initAudio();
+                if (!audio.duration) return;
+                const rect = bar.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = pct * audio.duration;
+            });
+        });
+    </script>
 </body>
 
 </html>

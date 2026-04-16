@@ -47,11 +47,100 @@
                 <p>Facilita la comunicación entre desarrolladores, diseñadores y clientes al establecer procesos claros
                     y puntos de control compartidos.</p>
             </div>
+            <div class="custom-audio" data-src="audios/Importancia.m4a">
+                <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24">
+                        <polygon points="6,3 20,12 6,21" />
+                    </svg></button>
+                <div class="audio-track">
+                    <div class="audio-progress-bar">
+                        <div class="audio-progress-fill"></div>
+                    </div>
+                    <div class="audio-time"><span class="audio-current">0:00</span><span
+                            class="audio-duration">-:--</span></div>
+                </div>
+            </div>
         </div>
 
         <a href="index.html" class="btn btn-menu">← Regresar</a>
     </div>
 
+    <script>
+        // ── Custom Audio Player Logic ──
+        const playSVG = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>';
+        const pauseSVG = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>';
+
+        function fmtTime(s) {
+            if (!s || !isFinite(s)) return '-:--';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + String(sec).padStart(2, '0');
+        }
+
+        let currentlyPlaying = null;
+
+        document.querySelectorAll('.custom-audio').forEach(player => {
+            const btn = player.querySelector('.audio-play-btn');
+            const bar = player.querySelector('.audio-progress-bar');
+            const fill = player.querySelector('.audio-progress-fill');
+            const curEl = player.querySelector('.audio-current');
+            const durEl = player.querySelector('.audio-duration');
+            let audio = null;
+            let loaded = false;
+
+            function initAudio() {
+                if (loaded) return;
+                audio = new Audio(player.dataset.src);
+                audio.preload = 'metadata';
+                loaded = true;
+
+                audio.addEventListener('loadedmetadata', () => {
+                    durEl.textContent = fmtTime(audio.duration);
+                });
+
+                audio.addEventListener('timeupdate', () => {
+                    if (!audio.duration) return;
+                    const pct = (audio.currentTime / audio.duration) * 100;
+                    fill.style.width = pct + '%';
+                    curEl.textContent = fmtTime(audio.currentTime);
+                });
+
+                audio.addEventListener('ended', () => {
+                    btn.innerHTML = playSVG;
+                    fill.style.width = '0%';
+                    curEl.textContent = '0:00';
+                    currentlyPlaying = null;
+                });
+            }
+
+            btn.addEventListener('click', () => {
+                initAudio();
+                if (audio.paused) {
+                    // Pause any other playing audio
+                    if (currentlyPlaying && currentlyPlaying !== player) {
+                        const otherBtn = currentlyPlaying.querySelector('.audio-play-btn');
+                        currentlyPlaying._audio.pause();
+                        otherBtn.innerHTML = playSVG;
+                    }
+                    audio.play();
+                    btn.innerHTML = pauseSVG;
+                    player._audio = audio;
+                    currentlyPlaying = player;
+                } else {
+                    audio.pause();
+                    btn.innerHTML = playSVG;
+                    currentlyPlaying = null;
+                }
+            });
+
+            bar.addEventListener('click', (e) => {
+                initAudio();
+                if (!audio.duration) return;
+                const rect = bar.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = pct * audio.duration;
+            });
+        });
+    </script>
 </body>
 
 </html>

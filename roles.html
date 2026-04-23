@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roles del Equipo de Desarrollo</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Flashcard Carousel ── */
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 2.5rem;
+            perspective: 1200px
+        }
+
+        .carousel-viewport {
+            position: relative;
+            width: 100%;
+            min-height: 620px;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start
+        }
+
+        .role-card {
+            position: absolute;
+            top: 0;
+            width: 52%;
+            border-radius: 22px;
+            border: 1px solid rgba(200, 160, 255, .22);
+            background: rgba(70, 25, 140, .18);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            overflow: hidden;
+            transition: transform .55s cubic-bezier(.4, .0, .2, 1),
+                opacity .55s cubic-bezier(.4, .0, .2, 1),
+                filter .55s ease,
+                left .55s cubic-bezier(.4, .0, .2, 1);
+            transform-origin: center center;
+            pointer-events: none;
+            opacity: 0;
+            filter: blur(4px) brightness(.7)
+        }
+
+        .role-card.active {
+            position: relative;
+            left: 0;
+            transform: translateZ(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+            filter: none;
+            z-index: 3
+        }
+
+        .role-card.prev {
+            left: 50%;
+            transform: translateX(-130%) scale(.78) rotateY(16deg);
+            opacity: .65;
+            z-index: 2;
+            filter: brightness(.78);
+            pointer-events: auto
+        }
+
+        .role-card.next {
+            left: 50%;
+            transform: translateX(30%) scale(.78) rotateY(-16deg);
+            opacity: .65;
+            z-index: 2;
+            filter: brightness(.78);
+            pointer-events: auto
+        }
+
+        .role-card.far-prev {
+            left: 50%;
+            transform: translateX(-180%) scale(.60) rotateY(30deg);
+            opacity: 0;
+            z-index: 0
+        }
+
+        .role-card.far-next {
+            left: 50%;
+            transform: translateX(80%) scale(.60) rotateY(-30deg);
+            opacity: 0;
+            z-index: 0
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(200, 160, 255, .50), transparent)
+        }
+
+        .role-card-header {
+            padding: 1.4rem 1.6rem 1rem;
+            border-bottom: 1px solid rgba(200, 160, 255, .15);
+            display: flex;
+            align-items: center;
+            gap: .9rem
+        }
+
+        .role-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.4rem;
+            height: 2.4rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(160, 80, 255, .65), rgba(100, 40, 200, .45));
+            border: 1px solid rgba(200, 160, 255, .45);
+            font-size: .95rem;
+            font-weight: 700;
+            color: #e8d8ff;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(160, 80, 255, .4)
+        }
+
+        .role-card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            color: #e4cfff;
+            text-transform: uppercase;
+            margin: 0
+        }
+
+        .role-card-body {
+            padding: 1.2rem 1.6rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            text-align: left
+        }
+
+        .role-desc {
+            font-size: .92rem;
+            line-height: 1.75;
+            color: rgba(210, 185, 255, .80)
+        }
+
+        .role-media {
+            display: flex;
+            flex-direction: column;
+            gap: .85rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid rgba(200, 160, 255, .10);
+            margin-top: .3rem
+        }
+
+        .media-label {
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(200, 160, 255, .55);
+            margin-bottom: .15rem;
+            display: flex;
+            align-items: center;
+            gap: .45rem
+        }
+
+        .media-label .label-icon {
+            font-size: .85rem
+        }
+
+        .role-img-wrap {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(200, 160, 255, .18);
+            background: rgba(60, 20, 110, .25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px
+        }
+
+        .role-img-wrap img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            display: block;
+            background: rgba(30, 10, 60, .5);
+            transition: transform .4s ease
+        }
+
+        .role-img-wrap:hover img {
+            transform: scale(1.05)
+        }
+
+        .role-img-placeholder {
+            color: rgba(200, 160, 255, .35);
+            font-size: .8rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: 2rem;
+            text-align: center
+        }
+
+        .role-vid-wrap {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(200, 160, 255, .18);
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: rgba(30, 10, 60, .5)
+        }
+
+        .role-vid-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none
+        }
+
+        .role-vid-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(200, 160, 255, .35);
+            font-size: .8rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            text-align: center;
+            width: 80%
+        }
+
+        /* ── Nav arrows ── */
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem
+        }
+
+        .nav-arrow {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid rgba(200, 160, 255, .40);
+            background: rgba(80, 30, 160, .25);
+            backdrop-filter: blur(8px);
+            color: #dbb8ff;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background .3s, border-color .3s, box-shadow .3s, transform .25s
+        }
+
+        .nav-arrow:hover {
+            background: rgba(150, 80, 255, .35);
+            border-color: rgba(220, 180, 255, .75);
+            color: #fff;
+            box-shadow: 0 0 22px rgba(160, 80, 255, .50);
+            transform: scale(1.1)
+        }
+
+        .nav-arrow:active {
+            transform: scale(.95)
+        }
+
+        .carousel-counter {
+            font-size: .85rem;
+            color: rgba(200, 160, 255, .6);
+            letter-spacing: .12em;
+            font-weight: 300;
+            min-width: 60px;
+            text-align: center
+        }
+
+        /* ── Dot indicators ── */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: .5rem;
+            margin-top: 1rem
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(200, 160, 255, .2);
+            border: 1px solid rgba(200, 160, 255, .25);
+            transition: all .3s;
+            cursor: pointer
+        }
+
+        .dot.active {
+            background: rgba(160, 80, 255, .7);
+            border-color: rgba(220, 180, 255, .8);
+            box-shadow: 0 0 10px rgba(160, 80, 255, .5);
+            transform: scale(1.3)
+        }
+
+        /* Side cards hover: bring forward slightly */
+        .role-card.prev:hover,
+        .role-card.next:hover {
+            filter: brightness(.9);
+            opacity: .85
+        }
+
+        @media(max-width:900px) {
+            .carousel-wrapper {
+                max-width: 98vw
+            }
+
+            .role-card {
+                width: 48%
+            }
+        }
+
+        @media(max-width:640px) {
+            .carousel-viewport {
+                min-height: 700px
+            }
+
+            .role-card {
+                width: 85%
+            }
+
+            .role-card.prev,
+            .role-card.next {
+                opacity: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+    <div class="milky-way"></div>
+
+    <div class="content" style="justify-content:flex-start;padding-top:3rem;">
+        <h1 style="width:100%;text-align:center;">Roles del Equipo de Desarrollo</h1>
+        <p class="lead">Cada proyecto de software exitoso depende de un equipo multidisciplinario.<br>Estos son los 9
+            roles clave que hacen posible el desarrollo.</p>
+
+        <div class="carousel-wrapper">
+            <div class="carousel-viewport" id="carouselViewport">
+                <!-- Cards are injected by JS -->
+            </div>
+            <div class="carousel-nav">
+                <button class="nav-arrow" id="prevBtn" aria-label="Anterior">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                </button>
+                <span class="carousel-counter" id="counter">1 / 9</span>
+                <button class="nav-arrow" id="nextBtn" aria-label="Siguiente">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+            </div>
+            <div class="carousel-dots" id="dots"></div>
+        </div>
+
+        <a href="index.html" class="btn btn-menu">← Regresar</a>
+    </div>
+
+    <script>
+        const roles = [
+            { num: 1, title: "Cliente", desc: "Es la persona o entidad que solicita el desarrollo del software. Define las necesidades, los requisitos del sistema y valida que el producto final cumpla con sus expectativas. Su participación activa durante todo el ciclo de vida es crucial para el éxito del proyecto, si este no hace su trabajo correctamente el proyecto va a fracasar debido a que no se puede hacer un software sin saber precisamente lo que quiere el cliente.", icon: "👤", img: "/images/Cliente.jpg", video: "https://www.youtube.com/embed/dsBARmNBUwk", audio: "/audios/Cliente.m4a" },
+            { num: 2, title: "Administrador", desc: "Responsable de la gestión y coordinación general del proyecto. Planifica los recursos, tiempos y presupuestos, supervisa el avance del equipo y toma decisiones estratégicas para garantizar que el proyecto se entregue a tiempo y dentro del alcance definido. Un mal administrador va a provocar retrasos, conflictos y errores que afectan a todos los demás miembros del equipo.", icon: "📋", img: "/images/Administrador.webp", video: "https://www.youtube.com/embed/pyl1aakEp5o", audio: "/audios/Administrador.m4a" },
+            { num: 3, title: "Analistas", desc: "Se encargan de estudiar, comprender y documentar los requisitos del sistema. Actúan como puente entre el cliente y el equipo técnico, traduciendo las necesidades del negocio en especificaciones funcionales y no funcionales claras y precisas. Si el analista no hace bien su trabajo, se podría acabar entregando un producto sin cumplir todos los requerimientos del cliente.", icon: "🔍", img: "/images/Analista.webp", video: "https://www.youtube.com/embed/Koj2Og0PvDM", audio: "/audios/Analistas.m4a" },
+            { num: 4, title: "Diseñadores", desc: "Crean la arquitectura y el diseño del sistema, tanto a nivel visual (interfaces de usuario) como a nivel técnico (estructura de datos, módulos, componentes). Su trabajo define cómo se verá y cómo funcionará internamente el software. La falta de un diseñador en un proyecto de Software es fatal, debido a que en la actualidad nadie quiere usar un programa que no sea visualmente estético y fácil de usar.", icon: "🎨", img: "/images/Diseñador.jpg", video: "https://www.youtube.com/embed/dVwH98Ln5Vs", audio: "/audios/Diseñadores.m4a" },
+            { num: 5, title: "Desarrolladores", desc: "Son los programadores que escriben el código fuente del software. Implementan las funcionalidades especificadas por los analistas y diseñadores, utilizando lenguajes de programación, frameworks y herramientas de desarrollo para construir el producto. Un proyecto de software jamás va a poder ser creado sin un buen equipo de desarrolladores, sin estos no hay un programa funcional que entregar.", icon: "💻", img: "/images/Desarrollador.jpg", video: "https://www.youtube.com/embed/H6e19XoihBo", audio: "/audios/Desarrolladores.m4a" },
+            { num: 6, title: "Testers", desc: "Se dedican a probar el software de manera sistemática para encontrar errores, defectos y problemas de rendimiento. Diseñan casos de prueba, ejecutan pruebas manuales y automatizadas, y reportan los hallazgos al equipo de desarrollo. Sin los testers no podríamos entregarle software de calidad a los clientes debido a la montaña de errores que no se detectaron.", icon: "🧪", img: "/images/Tester.jpg", video: "https://www.youtube.com/embed/vVS7zygur_0", audio: "/audios/Testers.m4a" },
+            { num: 7, title: "Aseguradores de Calidad", desc: "Verifican que el software cumpla con los estándares de calidad establecidos durante todo el proceso de desarrollo. Definen métricas, revisan procesos y aseguran que se sigan las mejores prácticas para entregar un producto confiable y robusto. Sin los aseguradores de calidad, un proyecto no pudiera asegurarse de complir reglamentos ISO o externos, causando posibles multas y fallas en el software.", icon: "✅", img: "/images/Asegurador.avif", video: "https://www.youtube.com/embed/408s6Y9onio", audio: "/audios/Aseguradores.m4a" },
+            { num: 8, title: "Documentador", desc: "Responsable de crear y mantener toda la documentación del proyecto: manuales de usuario, guías técnicas, especificaciones de diseño y registros de cambios. Su trabajo facilita la comprensión, uso y mantenimiento futuro del software. Sin los documentadores, el software sería muy difícil de usar para los usuarios finales y cualquier otro desarrollador que quiera continuar con el proyecto va a pasar mucho trabajo intentando entender la estructura del programa.", icon: "📝", img: "/images/Documentador.jpg", video: "https://www.youtube.com/embed/zoq1Yoqmbe4", audio: "/audios/Documentador.m4a" },
+            { num: 9, title: "Ingeniero de Manutención", desc: "Se encarga del mantenimiento del software una vez que está en producción. Corrige errores descubiertos tras el despliegue, implementa mejoras, adapta el sistema a nuevos entornos y asegura su correcto funcionamiento a lo largo del tiempo. Sin los ingenieros de manutención el software no podría ser actualizado ni reparado, dejándolo absoluto a tan solo unos cuantos años después de su elaboración.", icon: "🔧", img: "/images/Ingeniero manutencion.jpg", video: "https://www.youtube.com/embed/q0Q8F78r_Os", audio: "/audios/Manutencion.m4a" }
+        ];
+
+        const viewport = document.getElementById('carouselViewport');
+        const counter = document.getElementById('counter');
+        const dotsWrap = document.getElementById('dots');
+        let current = 0;
+
+        // Build cards
+        roles.forEach((r, i) => {
+            const card = document.createElement('div');
+            card.className = 'role-card';
+            card.dataset.index = i;
+
+            const imgSection = r.img
+                ? `<div class="role-img-wrap"><img src="${r.img}" alt="Foto de ${r.title}" loading="lazy"></div>`
+                : `<div class="role-img-wrap"><div class="role-img-placeholder">${r.icon}<br>Foto pendiente</div></div>`;
+
+            const vidSection = r.video
+                ? `<div class="role-vid-wrap"><iframe src="${r.video}" title="Video ${r.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`
+                : `<div class="role-vid-wrap"><div class="role-vid-placeholder">▶️<br>Video pendiente</div></div>`;
+
+            const audioSrc = r.audio || `audios/${r.title}.m4a`;
+
+            card.innerHTML = `
+        <div class="role-card-header">
+            <div class="role-num">${r.num}</div>
+            <h2>${r.title}</h2>
+        </div>
+        <div class="role-card-body">
+            <p class="role-desc">${r.desc}</p>
+            <div class="role-media">
+                <p class="media-label"><span class="label-icon">🖼️</span> Foto</p>
+                ${imgSection}
+                <p class="media-label"><span class="label-icon">▶️</span> Video explicativo</p>
+                ${vidSection}
+                <p class="media-label"><span class="label-icon">🔊</span> Audio descriptivo</p>
+                <div class="custom-audio" data-src="${audioSrc}">
+                    <button class="audio-play-btn" aria-label="Reproducir"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></button>
+                    <div class="audio-track">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-time"><span class="audio-current">0:00</span><span class="audio-duration">-:--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+            viewport.appendChild(card);
+        });
+
+        // Build dots
+        roles.forEach((_, i) => {
+            const d = document.createElement('span');
+            d.className = 'dot';
+            d.addEventListener('click', () => goTo(i));
+            dotsWrap.appendChild(d);
+        });
+
+        function updateCarousel() {
+            const cards = viewport.querySelectorAll('.role-card');
+            const n = cards.length;
+            cards.forEach((c, i) => {
+                c.classList.remove('active', 'prev', 'next', 'far-prev', 'far-next');
+                // Compute shortest circular distance
+                let diff = i - current;
+                if (diff > n / 2) diff -= n;
+                if (diff < -n / 2) diff += n;
+
+                if (diff === 0) c.classList.add('active');
+                else if (diff === -1) c.classList.add('prev');
+                else if (diff === 1) c.classList.add('next');
+                else if (diff < -1) c.classList.add('far-prev');
+                else c.classList.add('far-next');
+            });
+            counter.textContent = `${current + 1} / ${roles.length}`;
+            dotsWrap.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+        }
+
+        function goTo(idx) { current = idx; updateCarousel(); }
+        document.getElementById('prevBtn').addEventListener('click', () => { current = (current - 1 + roles.length) % roles.length; updateCarousel(); });
+        document.getElementById('nextBtn').addEventListener('click', () => { current = (current + 1) % roles.length; updateCarousel(); });
+
+        // Keyboard & swipe
+        document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') { current = (current - 1 + roles.length) % roles.length; updateCarousel(); } else if (e.key === 'ArrowRight') { current = (current + 1) % roles.length; updateCarousel(); } });
+        let touchX = 0;
+        viewport.addEventListener('touchstart', e => { touchX = e.changedTouches[0].screenX; }, { passive: true });
+        viewport.addEventListener('touchend', e => { const dx = e.changedTouches[0].screenX - touchX; if (Math.abs(dx) > 50) { if (dx < 0) { current = (current + 1) % roles.length; } else { current = (current - 1 + roles.length) % roles.length; } updateCarousel(); } });
+
+        updateCarousel();
+
+        // ── Custom Audio Player Logic ──
+        const playSVG = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>';
+        const pauseSVG = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>';
+        function fmtTime(s) { if (!s || !isFinite(s)) return '-:--'; const m = Math.floor(s / 60); const sec = Math.floor(s % 60); return m + ':' + String(sec).padStart(2, '0'); }
+        let currentlyPlaying = null;
+        document.querySelectorAll('.custom-audio').forEach(player => {
+            const btn = player.querySelector('.audio-play-btn'); const bar = player.querySelector('.audio-progress-bar'); const fill = player.querySelector('.audio-progress-fill'); const curEl = player.querySelector('.audio-current'); const durEl = player.querySelector('.audio-duration');
+            let audio = null; let loaded = false;
+            function initAudio() {
+                if (loaded) return; audio = new Audio(player.dataset.src); audio.preload = 'metadata'; loaded = true;
+                audio.addEventListener('loadedmetadata', () => { durEl.textContent = fmtTime(audio.duration); });
+                audio.addEventListener('timeupdate', () => { if (!audio.duration) return; fill.style.width = (audio.currentTime / audio.duration) * 100 + '%'; curEl.textContent = fmtTime(audio.currentTime); });
+                audio.addEventListener('ended', () => { btn.innerHTML = playSVG; fill.style.width = '0%'; curEl.textContent = '0:00'; currentlyPlaying = null; });
+            }
+            btn.addEventListener('click', () => { initAudio(); if (audio.paused) { if (currentlyPlaying && currentlyPlaying !== player) { currentlyPlaying.querySelector('.audio-play-btn').innerHTML = playSVG; currentlyPlaying._audio.pause(); } audio.play(); btn.innerHTML = pauseSVG; player._audio = audio; currentlyPlaying = player; } else { audio.pause(); btn.innerHTML = playSVG; currentlyPlaying = null; } });
+            bar.addEventListener('click', e => { initAudio(); if (!audio.duration) return; const rect = bar.getBoundingClientRect(); audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration; });
+        });
+    </script>
+</body>
+
+</html>

@@ -339,6 +339,180 @@
                 opacity: 0
             }
         }
+
+        /* ── Toggle Button ── */
+        .toggle-view-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            margin: 2rem auto;
+            padding: .85rem 2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(200, 160, 255, .40);
+            background: linear-gradient(135deg, rgba(100, 40, 200, .35), rgba(60, 20, 140, .25));
+            backdrop-filter: blur(10px);
+            color: #dbb8ff;
+            font-size: .95rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            cursor: pointer;
+            transition: all .35s ease;
+            text-transform: uppercase;
+        }
+        .toggle-view-btn:hover {
+            background: linear-gradient(135deg, rgba(150, 80, 255, .45), rgba(100, 40, 200, .35));
+            border-color: rgba(220, 180, 255, .75);
+            color: #fff;
+            box-shadow: 0 0 28px rgba(160, 80, 255, .45);
+            transform: translateY(-2px);
+        }
+        .toggle-view-btn:active {
+            transform: translateY(0) scale(.97);
+        }
+        .toggle-view-btn .btn-icon {
+            font-size: 1.15rem;
+            transition: transform .3s ease;
+        }
+        .toggle-view-btn:hover .btn-icon {
+            transform: rotate(180deg);
+        }
+
+        /* ── Roles Stage View ── */
+        .roles-stage-view {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            animation: fadeSlideIn .5s ease;
+        }
+        .roles-stage-view.visible {
+            display: block;
+        }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Color legend */
+        .stage-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .75rem 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.1rem 1.6rem;
+            border-radius: 16px;
+            background: rgba(40, 15, 80, .35);
+            border: 1px solid rgba(200, 160, 255, .15);
+            backdrop-filter: blur(10px);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: .45rem;
+            font-size: .82rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            color: rgba(230, 210, 255, .85);
+            text-transform: uppercase;
+        }
+        .legend-swatch {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,.2);
+            flex-shrink: 0;
+        }
+        /* Stage colors */
+        .swatch-comunicacion { background: #3b82f6; }
+        .swatch-planeacion   { background: #22c55e; }
+        .swatch-modelado     { background: #f59e0b; }
+        .swatch-construccion { background: #ef4444; }
+        .swatch-despliegue   { background: #a855f7; }
+
+        /* Roles Grid */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.1rem;
+        }
+        .role-stage-card {
+            position: relative;
+            border-radius: 16px;
+            padding: 1.3rem 1.4rem;
+            text-align: center;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.15);
+            transition: transform .3s ease, box-shadow .3s ease;
+            cursor: default;
+        }
+        .role-stage-card:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(0,0,0,.35);
+        }
+        .role-stage-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,.25);
+            z-index: 0;
+        }
+        .role-stage-icon {
+            position: relative;
+            z-index: 1;
+            font-size: 2rem;
+            margin-bottom: .4rem;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+        }
+        .role-stage-name {
+            position: relative;
+            z-index: 1;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 6px rgba(0,0,0,.5);
+            letter-spacing: .04em;
+        }
+        .role-stage-tags {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .3rem;
+            margin-top: .55rem;
+        }
+        .stage-tag {
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: .2rem .55rem;
+            border-radius: 20px;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,.4);
+            border: 1px solid rgba(255,255,255,.25);
+        }
+        .tag-comunicacion  { background: rgba(59,130,246,.7); }
+        .tag-planeacion    { background: rgba(34,197,94,.65); }
+        .tag-modelado      { background: rgba(245,158,11,.7); color: #1a1a1a; text-shadow: none; }
+        .tag-construccion  { background: rgba(239,68,68,.7); }
+        .tag-despliegue    { background: rgba(168,85,247,.7); }
+
+        @media(max-width:768px) {
+            .roles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media(max-width:480px) {
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+            .stage-legend {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
     </style>
 </head>
 
@@ -373,6 +547,23 @@
                 </button>
             </div>
             <div class="carousel-dots" id="dots"></div>
+        </div>
+
+        <div style="width:100%;display:flex;justify-content:center">
+            <button class="toggle-view-btn" id="toggleViewBtn">
+                <span class="btn-icon">🔄</span> Ver Roles por Etapa
+            </button>
+        </div>
+
+        <div class="roles-stage-view" id="rolesStageView">
+            <div class="stage-legend">
+                <div class="legend-item"><span class="legend-swatch swatch-comunicacion"></span> Comunicación</div>
+                <div class="legend-item"><span class="legend-swatch swatch-planeacion"></span> Planeación</div>
+                <div class="legend-item"><span class="legend-swatch swatch-modelado"></span> Modelado</div>
+                <div class="legend-item"><span class="legend-swatch swatch-construccion"></span> Construcción</div>
+                <div class="legend-item"><span class="legend-swatch swatch-despliegue"></span> Despliegue</div>
+            </div>
+            <div class="roles-grid" id="rolesGrid"></div>
         </div>
 
         <a href="index.html" class="btn btn-menu">← Regresar</a>
@@ -476,6 +667,84 @@
         viewport.addEventListener('touchend', e => { const dx = e.changedTouches[0].screenX - touchX; if (Math.abs(dx) > 50) { if (dx < 0) { current = (current + 1) % roles.length; } else { current = (current - 1 + roles.length) % roles.length; } updateCarousel(); } });
 
         updateCarousel();
+
+        // ── Roles-by-Stage Toggle Logic ──
+        const stageColors = {
+            comunicacion:  '#3b82f6',
+            planeacion:    '#22c55e',
+            modelado:      '#f59e0b',
+            construccion:  '#ef4444',
+            despliegue:    '#a855f7'
+        };
+        const allStages = ['comunicacion','planeacion','modelado','construccion','despliegue'];
+
+        const roleStages = [
+            { title: 'Cliente',               icon: '👤', stages: ['comunicacion','despliegue'] },
+            { title: 'Administrador',         icon: '📋', stages: allStages.slice() },
+            { title: 'Analista',              icon: '🔍', stages: ['comunicacion','planeacion','modelado','despliegue'] },
+            { title: 'Diseñador',             icon: '🎨', stages: ['planeacion','modelado'] },
+            { title: 'Desarrollador',         icon: '💻', stages: ['planeacion','modelado','construccion','despliegue'] },
+            { title: 'Tester',                icon: '🧪', stages: ['planeacion','modelado','construccion','despliegue'] },
+            { title: 'Asegurador de Calidad', icon: '✅', stages: allStages.slice() },
+            { title: 'Documentador',          icon: '📝', stages: allStages.slice() },
+            { title: 'Ing. de Manutención',   icon: '🔧', stages: ['construccion','despliegue'] }
+        ];
+
+        const stageLabels = {
+            comunicacion: 'Comunicación',
+            planeacion:   'Planeación',
+            modelado:     'Modelado',
+            construccion: 'Construcción',
+            despliegue:   'Despliegue'
+        };
+
+        // Build roles grid cards
+        const rolesGrid = document.getElementById('rolesGrid');
+        roleStages.forEach(r => {
+            const card = document.createElement('div');
+            card.className = 'role-stage-card';
+
+            // Build gradient from the role's stages
+            const colors = r.stages.map(s => stageColors[s]);
+            let gradient;
+            if (colors.length === 1) {
+                gradient = colors[0];
+            } else {
+                gradient = `linear-gradient(135deg, ${colors.join(', ')})`;
+            }
+            card.style.background = gradient;
+
+            // Tags
+            const tagsHTML = r.stages.map(s =>
+                `<span class="stage-tag tag-${s}">${stageLabels[s]}</span>`
+            ).join('');
+
+            card.innerHTML = `
+                <div class="role-stage-icon">${r.icon}</div>
+                <div class="role-stage-name">${r.title}</div>
+                <div class="role-stage-tags">${tagsHTML}</div>
+            `;
+            rolesGrid.appendChild(card);
+        });
+
+        // Toggle button logic
+        const toggleBtn = document.getElementById('toggleViewBtn');
+        const carouselWrapper = document.querySelector('.carousel-wrapper');
+        const rolesStageView = document.getElementById('rolesStageView');
+        let showingRoles = false;
+
+        toggleBtn.addEventListener('click', () => {
+            showingRoles = !showingRoles;
+            if (showingRoles) {
+                carouselWrapper.style.display = 'none';
+                rolesStageView.classList.add('visible');
+                toggleBtn.innerHTML = '<span class="btn-icon">🔄</span> Ver Flashcards';
+            } else {
+                carouselWrapper.style.display = '';
+                rolesStageView.classList.remove('visible');
+                toggleBtn.innerHTML = '<span class="btn-icon">🔄</span> Ver Roles por Etapa';
+            }
+        });
 
         // ── Custom Audio Player Logic ──
         const playSVG = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>';
